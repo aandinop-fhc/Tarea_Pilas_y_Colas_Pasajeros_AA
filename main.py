@@ -53,8 +53,9 @@ def mostrar_opciones_cola(titulo, entrar, salir, ver):
     print(f" 1. {entrar:<12}  2. Listar          3. {salir}")
     print(f" 4. {ver:<12}  5. Buscar          6. Modificar")
     print(" 7. Eliminar por número         8. Copiar")
-    print(" 9. Longitud / ¿vacía?          10. Ordenar asc")
-    print(" 11. Ordenas desc          12. Buscar (binaria)")
+    print(" 9. Longitud / ¿vacía?")
+    print("10. Ordenar asc                11. Ordenar desc")
+    print("12. Buscar (binaria)")
     print(" C. Cargar datos de prueba      0. Volver")
 
 
@@ -155,12 +156,14 @@ def menu_cola():
             print("  ✓ Datos de prueba encolados")
             pausa()
         elif op == "3":
-            posicion = leer_entero("  Posición a desencolar: ")
-            desencolado = cola.desencolar(posicion)
+            desencolado = cola.desencolar()
             if desencolado:
                 print(f"  ✓ Desencolado: {desencolado}")
-            else:
-                print("  ❌ No se pudo desencolar")
+                nuevo = cola.ver_frente()
+                if nuevo:
+                    print(f"  Nuevo frente: {nuevo.nombre}")
+                else:
+                    print("  La cola quedó vacía")
             pausa()
         elif op == "4":
             frente = cola.ver_frente()
@@ -220,7 +223,7 @@ def menu_cola():
             if pos == -1:
                 print("  No existe")
             else:
-                print(f"  Encontrado en [{pos}]: {cola.obtener(pos).nombre}")
+                print(f"  Encontrado en [{pos}]: {cola.datos[pos].nombre}")
             pausa()
         elif op == "0":
             break
