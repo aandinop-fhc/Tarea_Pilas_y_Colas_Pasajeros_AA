@@ -77,12 +77,14 @@ def menu_pila():
             print("  ✓ Datos de prueba apilados")
             pausa()
         elif op == "3":
-            posicion = leer_entero("  Posición a desapilar: ")
-            desapilado = pila.desapilar(posicion)
+            desapilado = pila.desapilar()
             if desapilado:
                 print(f"  ✓ Desapilado: {desapilado}")
-            else:
-                print("  ❌ No se pudo desapilar")
+                nuevo = pila.ver_tope()
+                if nuevo:
+                    print(f"  Nuevo tope: {nuevo.nombre}")
+                else:
+                    print("  La pila quedó vacía")
             pausa()
         elif op == "4":
             tope = pila.ver_tope()
