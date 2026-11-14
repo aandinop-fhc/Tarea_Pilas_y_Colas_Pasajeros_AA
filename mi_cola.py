@@ -17,6 +17,9 @@ class MiCola:
         if self.cantidad == self.capacidad:
             print("  ⚠ La cola está llena")
             return False
+        if self.buscar(pasajero.numero) != -1:        # mejora: sin números repetidos
+            print("  ⚠ Ya existe un pasajero con ese número")
+            return False
         self.datos[self.cantidad] = pasajero          # se pone a la fila por detrás
         self.cantidad = self.cantidad + 1
         return True
@@ -34,14 +37,14 @@ class MiCola:
                 print(f"  [{i}] {self.datos[i]}")
 
     # ------- ✍ IMPLEMENTA (tabla 3) · recorre SIEMPRE del frente al final -------
-    def desencolar(self, posicion):
-        if posicion < 0 or posicion >= self.cantidad:
-            print("  ⚠ Posición no válida")
+    def desencolar(self):
+        if self.cantidad == 0:
+            print("  ⚠ La cola está vacía")
             return None
-        valor = self.datos[posicion]              # guardo el que voy a quitar
-        for i in range(posicion, self.cantidad - 1):
-            self.datos[i] = self.datos[i + 1]     # muevo cada uno un lugar a la izquierda
-        self.datos[self.cantidad - 1] = None      # el último cajón queda vacío
+        valor = self.datos[0]                         # guardo el frente, que es el que sale
+        for i in range(self.cantidad - 1):
+            self.datos[i] = self.datos[i + 1]         # corro cada uno un lugar a la izquierda
+        self.datos[self.cantidad - 1] = None          # el último cajón queda vacío
         self.cantidad = self.cantidad - 1
         return valor
     
@@ -65,15 +68,15 @@ class MiCola:
         return True
 
     def eliminar_por_numero(self, numero):
-        pos = self.buscar(numero)
-        if pos == -1:
-            return None
-        valor = self.datos[pos]
-        for i in range(pos, self.cantidad - 1):
-            self.datos[i] = self.datos[i + 1]   
-        self.datos[self.cantidad - 1] = None
-        self.cantidad = self.cantidad - 1
-        return valor
+        eliminado = None
+        total = self.cantidad                         # guardo cuántos hay antes de empezar
+        for vuelta in range(total):                   # la fila da una vuelta completa
+            p = self.desencolar()                     # atiendo al del frente
+            if p.numero == numero:
+                eliminado = p                         # lo descarto: no lo vuelvo a encolar
+            else:
+                self.encolar(p)                       # los demás vuelven al final de la fila
+        return eliminado
 
     def copiar(self):
         nueva = MiCola(self.capacidad)
