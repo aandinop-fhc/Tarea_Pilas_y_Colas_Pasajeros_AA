@@ -16,6 +16,9 @@ class MiPila:
         if self.cantidad == self.capacidad:
             print("  ⚠ La pila está llena")
             return False
+        if self.buscar(pasajero.numero) != -1:        # mejora: sin números repetidos
+            print("  ⚠ Ya existe un pasajero con ese número")
+            return False
         self.datos[self.cantidad] = pasajero          # el nuevo queda encima: es el TOPE
         self.cantidad = self.cantidad + 1
         return True
@@ -33,14 +36,12 @@ class MiPila:
                 print(f"  [{i}] {self.datos[i]}")
 
     # ------- ✍ IMPLEMENTA (tabla 3) · recorre SIEMPRE del tope al fondo -------
-    def desapilar(self, posicion):
-        if posicion < 0 or posicion >= self.cantidad:
-            print(" ⚠ Posición no válida")
+    def desapilar(self):
+        if self.cantidad == 0:
+            print("  ⚠ La pila está vacía")
             return None
-        valor = self.datos[posicion]
-        for i in range (posicion, self.cantidad -1):
-            self.datos[i] = self.datos[i + 1]
-        self.datos[self.cantidad - 1] = None
+        valor = self.datos[self.cantidad - 1]         # guardo el tope, que es el que sale
+        self.datos[self.cantidad - 1] = None          # ese cajón queda vacío (no se corre nada)
         self.cantidad = self.cantidad - 1
         return valor
     
@@ -64,15 +65,17 @@ class MiPila:
         return True
 
     def eliminar_por_numero(self, numero):
-        pos = self.buscar(numero)
-        if pos == -1:
-            return None
-        valor = self.datos[pos]
-        for i in range(pos, self.cantidad - 1):
-            self.datos[i] = self.datos[i + 1]   
-        self.datos[self.cantidad - 1] = None
-        self.cantidad = self.cantidad - 1
-        return valor
+        aux = MiPila(self.capacidad)                  # pila auxiliar
+        eliminado = None
+        while self.cantidad > 0 and eliminado is None:
+            p = self.desapilar()                      # saco el tope
+            if p.numero == numero:
+                eliminado = p                         # lo descarto: no lo guardo
+            else:
+                aux.apilar(p)                         # los demás esperan en la auxiliar
+        while aux.cantidad > 0:
+            self.apilar(aux.desapilar())              # los devuelvo y el orden queda igual
+        return eliminado
 
     def copiar(self):
         nueva = MiPila(self.capacidad)
